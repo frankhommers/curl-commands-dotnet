@@ -6,6 +6,11 @@ namespace CurlDotNet.Parsing;
 /// </summary>
 public static class ShellTokenizer
 {
+    /// <summary>
+    /// Splits a string into tokens following POSIX shell quoting rules.
+    /// </summary>
+    /// <param name="input">The input string to tokenize.</param>
+    /// <returns>A list of tokens.</returns>
     public static List<string> Tokenize(string input)
     {
         var tokens = new List<string>();

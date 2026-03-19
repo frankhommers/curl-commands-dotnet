@@ -5,8 +5,22 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <RootNamespace>CurlDotNet</RootNamespace>
+
+    <!-- NuGet Package -->
+    <PackageId>CurlDotNet</PackageId>
+    <Version>1.0.0</Version>
+    <Authors>Frank Hommers</Authors>
+    <Description>Parse and execute curl command strings at runtime via HttpClient. Supports headers, auth, form data, timeouts, and more with zero external dependencies.</Description>
+    <PackageTags>curl;httpclient;http;rest;api</PackageTags>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <RepositoryType>git</RepositoryType>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
   <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
     <PackageReference Include="System.Net.Http" Version="4.3.4" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="../../README.md" Pack="true" PackagePath="/" />
   </ItemGroup>
 </Project>
