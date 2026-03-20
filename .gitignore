@@ -2,3 +2,10 @@ bin/
 obj/
 *.nupkg
 *.snupkg
+*.user
+*.suo
+.vs/
+.idea/
+*.DotSettings.user
+TestResults/
+.worktrees/
