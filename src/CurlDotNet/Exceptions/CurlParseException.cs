@@ -9,7 +9,9 @@ public class CurlParseException : Exception
     public int? TokenPosition { get; }
 
     /// <summary>Creates a new <see cref="CurlParseException"/> with the specified message.</summary>
-    public CurlParseException(string message) : base(message) { }
+    public CurlParseException(string message) : base(message)
+    {
+    }
 
     /// <summary>Creates a new <see cref="CurlParseException"/> with the specified message and token position.</summary>
     public CurlParseException(string message, int tokenPosition)
@@ -20,5 +22,7 @@ public class CurlParseException : Exception
 
     /// <summary>Creates a new <see cref="CurlParseException"/> with the specified message and inner exception.</summary>
     public CurlParseException(string message, Exception innerException)
-        : base(message, innerException) { }
+        : base(message, innerException)
+    {
+    }
 }

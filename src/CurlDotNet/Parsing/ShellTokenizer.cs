@@ -1,3 +1,5 @@
+using System.Text;
+
 namespace CurlDotNet.Parsing;
 
 /// <summary>
@@ -13,18 +15,18 @@ public static class ShellTokenizer
     /// <returns>A list of tokens.</returns>
     public static List<string> Tokenize(string input)
     {
-        var tokens = new List<string>();
+        List<string> tokens = [];
         if (string.IsNullOrEmpty(input))
             return tokens;
 
-        var current = new System.Text.StringBuilder();
-        var inSingleQuote = false;
-        var inDoubleQuote = false;
-        var hasContent = false;
+        StringBuilder current = new();
+        bool inSingleQuote = false;
+        bool inDoubleQuote = false;
+        bool hasContent = false;
 
-        for (var i = 0; i < input.Length; i++)
+        for (int i = 0; i < input.Length; i++)
         {
-            var c = input[i];
+            char c = input[i];
 
             if (inSingleQuote)
             {
@@ -43,7 +45,7 @@ public static class ShellTokenizer
             {
                 if (c == '\\' && i + 1 < input.Length)
                 {
-                    var next = input[i + 1];
+                    char next = input[i + 1];
                     if (next == '"' || next == '\\' || next == '$' || next == '`')
                     {
                         current.Append(next);
@@ -68,7 +70,7 @@ public static class ShellTokenizer
             // Not inside quotes
             if (c == '\\' && i + 1 < input.Length)
             {
-                var next = input[i + 1];
+                char next = input[i + 1];
                 if (next == '\n')
                 {
                     // Line continuation — skip both backslash and newline

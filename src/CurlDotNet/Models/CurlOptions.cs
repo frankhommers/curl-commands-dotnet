@@ -12,7 +12,7 @@ public class CurlOptions
     public string? Method { get; set; }
 
     /// <summary>Request headers (-H, --header).</summary>
-    public List<(string Name, string Value)> Headers { get; set; } = new();
+    public List<(string Name, string Value)> Headers { get; set; } = [];
 
     /// <summary>Request body (-d, --data, --data-raw).</summary>
     public string? DataBody { get; set; }
@@ -27,7 +27,7 @@ public class CurlOptions
     public string? BearerToken { get; set; }
 
     /// <summary>Multipart form fields (-F, --form).</summary>
-    public List<FormField> FormFields { get; set; } = new();
+    public List<FormField> FormFields { get; set; } = [];
 
     /// <summary>Whether to follow redirects (-L, --location).</summary>
     public bool FollowRedirects { get; set; }

@@ -6,14 +6,14 @@ namespace CurlDotNet.Internal;
 /// </summary>
 internal static class InsecureHttpClientFactory
 {
-    private static readonly Lazy<HttpClient> LazyClient = new(() =>
+    private static readonly Lazy<HttpClient> _lazyClient = new(() =>
     {
-        var handler = new HttpClientHandler
+        HttpClientHandler handler = new()
         {
             ServerCertificateCustomValidationCallback = (_, _, _, _) => true
         };
         return new HttpClient(handler);
     });
 
-    public static HttpClient GetClient() => LazyClient.Value;
+    public static HttpClient GetClient() => _lazyClient.Value;
 }

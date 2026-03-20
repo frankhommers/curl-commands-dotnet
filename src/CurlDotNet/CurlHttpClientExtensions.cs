@@ -29,14 +29,14 @@ public static class CurlHttpClientExtensions
         string curlCommand,
         CancellationToken cancellationToken = default)
     {
-        var options = CurlOptionParser.Parse(curlCommand);
-        var request = HttpRequestBuilder.Build(options);
-        var client = ResolveClient(httpClient, options);
+        CurlOptions options = CurlOptionParser.Parse(curlCommand);
+        HttpRequestMessage request = HttpRequestBuilder.Build(options);
+        HttpClient client = ResolveClient(httpClient, options);
 
-        using var timeoutCts = CreateTimeoutCts(options, cancellationToken);
-        var token = timeoutCts?.Token ?? cancellationToken;
+        using CancellationTokenSource? timeoutCts = CreateTimeoutCts(options, cancellationToken);
+        CancellationToken token = timeoutCts?.Token ?? cancellationToken;
 
-        return await client.SendAsync(request, token);
+        return await client.SendAsync(request, token).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -51,25 +51,20 @@ public static class CurlHttpClientExtensions
         string curlCommand,
         CancellationToken cancellationToken = default)
     {
-        using var response = await ExecuteCurlAsync(httpClient, curlCommand, cancellationToken);
+        using HttpResponseMessage response = await ExecuteCurlAsync(httpClient, curlCommand, cancellationToken)
+            .ConfigureAwait(false);
         // Response is disposed — fire and forget
     }
 
-    private static HttpClient ResolveClient(HttpClient httpClient, CurlOptions options)
-    {
-        if (options.Insecure)
-        {
-            return InsecureHttpClientFactory.GetClient();
-        }
-        return httpClient;
-    }
+    private static HttpClient ResolveClient(HttpClient httpClient, CurlOptions options) =>
+        options.Insecure ? InsecureHttpClientFactory.GetClient() : httpClient;
 
     private static CancellationTokenSource? CreateTimeoutCts(CurlOptions options, CancellationToken cancellationToken)
     {
-        var timeoutSeconds = options.MaxTimeSeconds ?? options.ConnectTimeoutSeconds;
+        int? timeoutSeconds = options.MaxTimeSeconds ?? options.ConnectTimeoutSeconds;
         if (timeoutSeconds.HasValue)
         {
-            var cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+            CancellationTokenSource cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
             cts.CancelAfter(TimeSpan.FromSeconds(timeoutSeconds.Value));
             return cts;
         }

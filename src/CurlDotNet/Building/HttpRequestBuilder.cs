@@ -9,13 +9,27 @@ namespace CurlDotNet.Building;
 /// </summary>
 public static class HttpRequestBuilder
 {
+    private const string ContentTypeHeader = "Content-Type";
+    private const string ContentLengthHeader = "Content-Length";
+    private const string ContentEncodingHeader = "Content-Encoding";
+    private const string ContentLanguageHeader = "Content-Language";
+    private const string ContentDispositionHeader = "Content-Disposition";
+    private const string ContentLocationHeader = "Content-Location";
+    private const string ContentRangeHeader = "Content-Range";
+    private const string BasicAuthScheme = "Basic";
+    private const string BearerAuthScheme = "Bearer";
+    private const string CookieHeader = "Cookie";
+    private const string UserAgentHeader = "User-Agent";
+    private const string GzipEncoding = "gzip";
+    private const string DeflateEncoding = "deflate";
+
     /// <summary>
     /// Builds an HttpRequestMessage from parsed CurlOptions.
     /// </summary>
     public static HttpRequestMessage Build(CurlOptions options)
     {
-        var method = ResolveMethod(options);
-        var request = new HttpRequestMessage(method, options.Url);
+        HttpMethod method = ResolveMethod(options);
+        HttpRequestMessage request = new(method, options.Url);
 
         SetContent(request, options);
         SetHeaders(request, options);
@@ -45,9 +59,9 @@ public static class HttpRequestBuilder
     {
         // Find Content-Type from headers (if specified)
         string? contentType = null;
-        foreach (var (name, value) in options.Headers)
+        foreach ((string name, string value) in options.Headers)
         {
-            if (name.Equals("Content-Type", StringComparison.OrdinalIgnoreCase))
+            if (name.Equals(ContentTypeHeader, StringComparison.OrdinalIgnoreCase))
             {
                 contentType = value;
                 break;
@@ -56,13 +70,13 @@ public static class HttpRequestBuilder
 
         if (options.FormFields.Count > 0)
         {
-            var multipart = new MultipartFormDataContent();
-            foreach (var field in options.FormFields)
+            MultipartFormDataContent multipart = new();
+            foreach (FormField field in options.FormFields)
             {
                 if (field.IsFile)
                 {
-                    var fileBytes = File.ReadAllBytes(field.Value);
-                    var fileContent = new ByteArrayContent(fileBytes);
+                    byte[] fileBytes = File.ReadAllBytes(field.Value);
+                    ByteArrayContent fileContent = new(fileBytes);
                     if (field.ContentType != null)
                     {
                         fileContent.Headers.ContentType = MediaTypeHeaderValue.Parse(field.ContentType);
@@ -92,8 +106,8 @@ public static class HttpRequestBuilder
         {
             if (options.DataBody.StartsWith("@"))
             {
-                var filePath = options.DataBody.Substring(1);
-                var fileContent = File.ReadAllText(filePath);
+                string filePath = options.DataBody.Substring(1);
+                string fileContent = File.ReadAllText(filePath);
                 request.Content = new StringContent(fileContent, Encoding.UTF8);
             }
             else
@@ -111,10 +125,10 @@ public static class HttpRequestBuilder
 
     private static void SetHeaders(HttpRequestMessage request, CurlOptions options)
     {
-        foreach (var (name, value) in options.Headers)
+        foreach ((string name, string value) in options.Headers)
         {
             // Content-Type is set on content, not on request headers
-            if (name.Equals("Content-Type", StringComparison.OrdinalIgnoreCase))
+            if (name.Equals(ContentTypeHeader, StringComparison.OrdinalIgnoreCase))
                 continue;
 
             // Some headers must be set on Content.Headers
@@ -131,25 +145,25 @@ public static class HttpRequestBuilder
 
     private static bool IsContentHeader(string name)
     {
-        return name.Equals("Content-Type", StringComparison.OrdinalIgnoreCase)
-            || name.Equals("Content-Length", StringComparison.OrdinalIgnoreCase)
-            || name.Equals("Content-Encoding", StringComparison.OrdinalIgnoreCase)
-            || name.Equals("Content-Language", StringComparison.OrdinalIgnoreCase)
-            || name.Equals("Content-Disposition", StringComparison.OrdinalIgnoreCase)
-            || name.Equals("Content-Location", StringComparison.OrdinalIgnoreCase)
-            || name.Equals("Content-Range", StringComparison.OrdinalIgnoreCase);
+        return name.Equals(ContentTypeHeader, StringComparison.OrdinalIgnoreCase)
+            || name.Equals(ContentLengthHeader, StringComparison.OrdinalIgnoreCase)
+            || name.Equals(ContentEncodingHeader, StringComparison.OrdinalIgnoreCase)
+            || name.Equals(ContentLanguageHeader, StringComparison.OrdinalIgnoreCase)
+            || name.Equals(ContentDispositionHeader, StringComparison.OrdinalIgnoreCase)
+            || name.Equals(ContentLocationHeader, StringComparison.OrdinalIgnoreCase)
+            || name.Equals(ContentRangeHeader, StringComparison.OrdinalIgnoreCase);
     }
 
     private static void SetAuth(HttpRequestMessage request, CurlOptions options)
     {
         if (!string.IsNullOrEmpty(options.UserCredentials))
         {
-            var encoded = Convert.ToBase64String(Encoding.UTF8.GetBytes(options.UserCredentials));
-            request.Headers.Authorization = new AuthenticationHeaderValue("Basic", encoded);
+            string encoded = Convert.ToBase64String(Encoding.UTF8.GetBytes(options.UserCredentials));
+            request.Headers.Authorization = new(BasicAuthScheme, encoded);
         }
         else if (!string.IsNullOrEmpty(options.BearerToken))
         {
-            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", options.BearerToken);
+            request.Headers.Authorization = new(BearerAuthScheme, options.BearerToken);
         }
     }
 
@@ -157,23 +171,23 @@ public static class HttpRequestBuilder
     {
         if (!string.IsNullOrEmpty(options.Cookie))
         {
-            request.Headers.TryAddWithoutValidation("Cookie", options.Cookie);
+            request.Headers.TryAddWithoutValidation(CookieHeader, options.Cookie);
         }
 
         if (!string.IsNullOrEmpty(options.UserAgent))
         {
-            request.Headers.TryAddWithoutValidation("User-Agent", options.UserAgent);
+            request.Headers.TryAddWithoutValidation(UserAgentHeader, options.UserAgent);
         }
 
         if (!string.IsNullOrEmpty(options.Referer))
         {
-            request.Headers.Referrer = new Uri(options.Referer);
+            request.Headers.Referrer = new(options.Referer);
         }
 
         if (options.Compressed)
         {
-            request.Headers.AcceptEncoding.Add(new StringWithQualityHeaderValue("gzip"));
-            request.Headers.AcceptEncoding.Add(new StringWithQualityHeaderValue("deflate"));
+            request.Headers.AcceptEncoding.Add(new(GzipEncoding));
+            request.Headers.AcceptEncoding.Add(new(DeflateEncoding));
         }
     }
 }
