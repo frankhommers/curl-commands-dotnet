@@ -158,7 +158,7 @@ public class HttpRequestBuilderTests
         };
         HttpRequestMessage request = HttpRequestBuilder.Build(options);
 
-        List<string?> encodings = request.Headers.AcceptEncoding.Select(e => e.Value).ToList();
+        List<string> encodings = request.Headers.AcceptEncoding.Select(e => e.Value!).ToList();
         Assert.Contains("gzip", encodings);
         Assert.Contains("deflate", encodings);
     }
