@@ -1,7 +1,7 @@
-using CurlDotNet.Building;
-using CurlDotNet.Models;
+using CurlCommandParser.Building;
+using CurlCommandParser.Models;
 
-namespace CurlDotNet.Tests;
+namespace CurlCommandParser.Tests;
 
 public class HttpRequestBuilderTests
 {

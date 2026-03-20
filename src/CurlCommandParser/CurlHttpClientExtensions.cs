@@ -1,9 +1,9 @@
-using CurlDotNet.Building;
-using CurlDotNet.Internal;
-using CurlDotNet.Models;
-using CurlDotNet.Parsing;
+using CurlCommandParser.Building;
+using CurlCommandParser.Internal;
+using CurlCommandParser.Models;
+using CurlCommandParser.Parsing;
 
-namespace CurlDotNet;
+namespace CurlCommandParser;
 
 /// <summary>
 /// Extension methods on HttpClient for executing curl commands.

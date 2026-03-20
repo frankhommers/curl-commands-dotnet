@@ -4,10 +4,10 @@
     <LangVersion>latest</LangVersion>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <RootNamespace>CurlDotNet</RootNamespace>
+    <RootNamespace>CurlCommandParser</RootNamespace>
 
     <!-- NuGet Package -->
-    <PackageId>CurlDotNet</PackageId>
+    <PackageId>CurlCommandParser</PackageId>
     <Version>1.0.0</Version>
     <Authors>Frank Hommers</Authors>
     <Description>Parse and execute curl command strings at runtime via HttpClient. Supports headers, auth, form data, timeouts, and more with zero external dependencies.</Description>

@@ -1,17 +1,17 @@
-# CurlDotNet
+# CurlCommandParser
 
 Parse and execute curl command strings at runtime via `HttpClient`. Zero external dependencies.
 
 ## Install
 
 ```
-dotnet add package CurlDotNet
+dotnet add package CurlCommandParser
 ```
 
 ## Usage
 
 ```csharp
-using CurlDotNet;
+using CurlCommandParser;
 
 using var httpClient = new HttpClient();
 
@@ -67,7 +67,7 @@ The `curl` prefix is optional.
 Parse errors throw `CurlParseException` with a descriptive message. HTTP errors follow standard `HttpClient` behavior -- use `response.EnsureSuccessStatusCode()` or check `response.IsSuccessStatusCode`.
 
 ```csharp
-using CurlDotNet.Exceptions;
+using CurlCommandParser.Exceptions;
 
 try
 {

@@ -19,7 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\CurlDotNet\CurlDotNet.csproj" />
+    <ProjectReference Include="..\..\src\CurlCommandParser\CurlCommandParser.csproj" />
   </ItemGroup>
 
 </Project>

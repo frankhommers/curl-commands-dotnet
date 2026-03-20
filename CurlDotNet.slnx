@@ -1,8 +1,0 @@
-<Solution>
-  <Folder Name="/src/">
-    <Project Path="src/CurlDotNet/CurlDotNet.csproj" />
-  </Folder>
-  <Folder Name="/tests/">
-    <Project Path="tests/CurlDotNet.Tests/CurlDotNet.Tests.csproj" />
-  </Folder>
-</Solution>
