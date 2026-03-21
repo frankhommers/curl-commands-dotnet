@@ -1,8 +1,8 @@
 <Solution>
   <Folder Name="/src/">
-    <Project Path="src/CurlCommandParser/CurlCommandParser.csproj" />
+    <Project Path="src/CurlCommandParser/CurlCommandParser.csproj"/>
   </Folder>
   <Folder Name="/tests/">
-    <Project Path="tests/CurlCommandParser.Tests/CurlCommandParser.Tests.csproj" />
+    <Project Path="tests/CurlCommandParser.Tests/CurlCommandParser.Tests.csproj"/>
   </Folder>
 </Solution>

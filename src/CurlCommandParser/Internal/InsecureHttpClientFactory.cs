@@ -6,14 +6,17 @@ namespace CurlCommandParser.Internal;
 /// </summary>
 internal static class InsecureHttpClientFactory
 {
-    private static readonly Lazy<HttpClient> _lazyClient = new(() =>
+  private static readonly Lazy<HttpClient> _lazyClient = new(() =>
+  {
+    HttpClientHandler handler = new()
     {
-        HttpClientHandler handler = new()
-        {
-            ServerCertificateCustomValidationCallback = (_, _, _, _) => true
-        };
-        return new HttpClient(handler);
-    });
+      ServerCertificateCustomValidationCallback = (_, _, _, _) => true,
+    };
+    return new HttpClient(handler);
+  });
 
-    public static HttpClient GetClient() => _lazyClient.Value;
+  public static HttpClient GetClient()
+  {
+    return _lazyClient.Value;
+  }
 }

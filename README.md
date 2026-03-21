@@ -50,6 +50,8 @@ The `curl` prefix is optional.
 | `--compressed` | Accept gzip/deflate encoding |
 | `--connect-timeout` | Connection timeout in seconds |
 | `--max-time` | Maximum request time in seconds |
+| `--data-urlencode` | URL-encode data (`name=value`, implies POST) |
+| `-x`, `--proxy` | Use HTTP proxy |
 
 ## Features
 
@@ -61,6 +63,8 @@ The `curl` prefix is optional.
 - **Multipart form data** -- `-F 'file=@/path/to/file;type=application/pdf'`
 - **Timeout support** -- `--max-time` and `--connect-timeout` via `CancellationToken`
 - **Insecure mode** -- `-k` uses an internal `HttpClient` that skips certificate validation
+- **URL encoding** -- `--data-urlencode` automatically encodes values
+- **Proxy support** -- `-x`/`--proxy` routes requests through an HTTP proxy
 
 ## Error Handling
 

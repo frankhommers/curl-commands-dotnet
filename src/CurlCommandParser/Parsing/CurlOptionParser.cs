@@ -25,6 +25,8 @@ public static class CurlOptionParser
   private const string LongUserAgent = "--user-agent";
   private const string LongReferer = "--referer";
   private const string LongCompressed = "--compressed";
+  private const string LongDataUrlEncode = "--data-urlencode";
+  private const string LongProxy = "--proxy";
   private const string LongUrl = "--url";
   private const string ContentTypeSeparator = ";type=";
   private const int ContentTypeSeparatorLength = 6;
@@ -73,6 +75,7 @@ public static class CurlOptionParser
         {
           options.Url = token;
         }
+
         i++;
       }
     }
@@ -114,6 +117,7 @@ public static class CurlOptionParser
         {
           options.BinaryData = System.Text.Encoding.UTF8.GetBytes(binaryArg);
         }
+
         return i + 2;
 
       case LongUser:
@@ -160,6 +164,14 @@ public static class CurlOptionParser
         options.Compressed = true;
         return i + 1;
 
+      case LongDataUrlEncode:
+        options.DataUrlEncodeFields.Add(GetNextArg(tokens, i, token));
+        return i + 2;
+
+      case LongProxy:
+        options.ProxyUrl = GetNextArg(tokens, i, token);
+        return i + 2;
+
       case LongUrl:
         options.Url = GetNextArg(tokens, i, token);
         return i + 2;
@@ -194,6 +206,7 @@ public static class CurlOptionParser
       {
         ApplyShortBooleanFlag(token[j], options);
       }
+
       return i + 1;
     }
 
@@ -236,10 +249,17 @@ public static class CurlOptionParser
         options.Referer = GetNextArg(tokens, i, $"-{flag}");
         return i + 2;
 
+      case 'x':
+        options.ProxyUrl = GetNextArg(tokens, i, $"-{flag}");
+        return i + 2;
+
       case 'o':
       case 'O':
         if (flag == 'o')
-            return i + 2;
+        {
+          return i + 2;
+        }
+
         return i + 1;
 
       default:
@@ -248,6 +268,7 @@ public static class CurlOptionParser
           ApplyShortBooleanFlag(flag, options);
           return i + 1;
         }
+
         throw new CurlParseException($"Unsupported curl option: '-{flag}'.", i);
     }
   }
@@ -289,7 +310,7 @@ public static class CurlOptionParser
 
     string name = fieldValue.Substring(0, equalsIndex);
     string value = fieldValue.Substring(equalsIndex + 1);
-    FormField field = new() { Name = name };
+    FormField field = new() {Name = name};
 
     if (value.StartsWith("@"))
     {
@@ -315,13 +336,17 @@ public static class CurlOptionParser
     options.FormFields.Add(field);
   }
 
-  private static string GetNextArg(List<string> tokens, int currentIndex, string optionName) =>
-    currentIndex + 1 < tokens.Count
+  private static string GetNextArg(List<string> tokens, int currentIndex, string optionName)
+  {
+    return currentIndex + 1 < tokens.Count
       ? tokens[currentIndex + 1]
       : throw new CurlParseException($"Option '{optionName}' requires an argument.", currentIndex);
+  }
 
-  private static int ParseInt(string value, string optionName) =>
-    int.TryParse(value, out int result)
+  private static int ParseInt(string value, string optionName)
+  {
+    return int.TryParse(value, out int result)
       ? result
       : throw new CurlParseException($"Option '{optionName}' requires a numeric value, got '{value}'.");
+  }
 }
