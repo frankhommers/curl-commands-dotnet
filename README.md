@@ -52,6 +52,13 @@ The `curl` prefix is optional.
 | `--max-time` | Maximum request time in seconds |
 | `--data-urlencode` | URL-encode data (`name=value`, implies POST) |
 | `-x`, `--proxy` | Use HTTP proxy |
+| `-G`, `--get` | Force GET; data becomes query string |
+| `-I`, `--head` | HEAD request |
+| `-T`, `--upload-file` | Upload file via PUT |
+| `--cert`, `--cert-type` | Client certificate (PEM, DER, P12) |
+| `--key`, `--key-type` | Client certificate private key |
+| `-U`, `--proxy-user` | Proxy credentials (`user:password`) |
+| `--http1.0`, `--http1.1`, `--http2`, `--http3` | HTTP version |
 
 ## Features
 
@@ -65,6 +72,11 @@ The `curl` prefix is optional.
 - **Insecure mode** -- `-k` uses an internal `HttpClient` that skips certificate validation
 - **URL encoding** -- `--data-urlencode` automatically encodes values
 - **Proxy support** -- `-x`/`--proxy` routes requests through an HTTP proxy
+- **Force GET** -- `-G` moves `-d` data to query string parameters
+- **File upload** -- `-T` uploads files via PUT
+- **Client certificates** -- `--cert`/`--key` for mutual TLS
+- **Proxy auth** -- `-U`/`--proxy-user` for proxy credentials
+- **HTTP version** -- `--http1.0` through `--http3`
 
 ## Error Handling
 

@@ -279,4 +279,113 @@ public class HttpRequestBuilderTests
 
     Assert.Equal(HttpMethod.Post, request.Method);
   }
+
+  [Fact]
+  public void Build_ForceGet_MovesDataToQueryString()
+  {
+    CurlOptions options = new()
+    {
+      Url = "https://api.example.com/search",
+      DataBody = "q=test&lang=en",
+      ForceGet = true,
+    };
+    HttpRequestMessage request = HttpRequestBuilder.Build(options);
+
+    Assert.Equal(HttpMethod.Get, request.Method);
+    Assert.Equal("https://api.example.com/search?q=test&lang=en", request.RequestUri!.ToString());
+    Assert.Null(request.Content);
+  }
+
+  [Fact]
+  public void Build_ForceGet_AppendsToExistingQueryString()
+  {
+    CurlOptions options = new()
+    {
+      Url = "https://api.example.com/search?page=1",
+      DataBody = "q=test",
+      ForceGet = true,
+    };
+    HttpRequestMessage request = HttpRequestBuilder.Build(options);
+
+    Assert.Equal("https://api.example.com/search?page=1&q=test", request.RequestUri!.ToString());
+  }
+
+  [Fact]
+  public void Build_ForceGet_WithDataUrlEncode_EncodesQueryString()
+  {
+    CurlOptions options = new()
+    {
+      Url = "https://api.example.com/search",
+      DataUrlEncodeFields = { "q=hello world" },
+      ForceGet = true,
+    };
+    HttpRequestMessage request = HttpRequestBuilder.Build(options);
+
+    Assert.Equal(HttpMethod.Get, request.Method);
+    Assert.Equal("https://api.example.com/search?q=hello%20world", request.RequestUri!.AbsoluteUri);
+  }
+
+  [Fact]
+  public void Build_UploadFile_ImpliesPut()
+  {
+    // Create a temp file for the test
+    string tempFile = Path.GetTempFileName();
+    File.WriteAllText(tempFile, "file content");
+    try
+    {
+      CurlOptions options = new()
+      {
+        Url = "https://api.example.com/upload",
+        UploadFile = tempFile,
+      };
+      HttpRequestMessage request = HttpRequestBuilder.Build(options);
+
+      Assert.Equal(HttpMethod.Put, request.Method);
+      Assert.NotNull(request.Content);
+      Assert.IsType<ByteArrayContent>(request.Content);
+    }
+    finally
+    {
+      File.Delete(tempFile);
+    }
+  }
+
+  [Fact]
+  public void Build_HttpVersion_SetsOnRequest()
+  {
+    CurlOptions options = new()
+    {
+      Url = "https://api.example.com",
+      HttpVersion = "2",
+    };
+    HttpRequestMessage request = HttpRequestBuilder.Build(options);
+
+    Assert.Equal(new Version(2, 0), request.Version);
+  }
+
+  [Fact]
+  public void Build_HttpVersion11_SetsOnRequest()
+  {
+    CurlOptions options = new()
+    {
+      Url = "https://api.example.com",
+      HttpVersion = "1.1",
+    };
+    HttpRequestMessage request = HttpRequestBuilder.Build(options);
+
+    Assert.Equal(new Version(1, 1), request.Version);
+  }
+
+  [Fact]
+  public void Build_HeadMethod_CreatesHeadRequest()
+  {
+    CurlOptions options = new()
+    {
+      Url = "https://api.example.com",
+      Method = "HEAD",
+    };
+    HttpRequestMessage request = HttpRequestBuilder.Build(options);
+
+    Assert.Equal(HttpMethod.Head, request.Method);
+  }
 }

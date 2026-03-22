@@ -252,4 +252,110 @@ public class CurlOptionParserTests
     Assert.Equal("http://proxy:8080", options.ProxyUrl);
     Assert.True(options.Insecure);
   }
+
+  [Fact]
+  public void Parse_ForceGet_SetsFlag()
+  {
+    CurlOptions options = CurlOptionParser.Parse("-G -d 'q=test' https://api.example.com");
+    Assert.True(options.ForceGet);
+    Assert.Equal("q=test", options.DataBody);
+  }
+
+  [Fact]
+  public void Parse_ForceGetLongOption_SetsFlag()
+  {
+    CurlOptions options = CurlOptionParser.Parse("--get -d 'q=test' https://api.example.com");
+    Assert.True(options.ForceGet);
+  }
+
+  [Fact]
+  public void Parse_HeadLongOption_SetsMethod()
+  {
+    CurlOptions options = CurlOptionParser.Parse("--head https://api.example.com");
+    Assert.Equal("HEAD", options.Method);
+  }
+
+  [Fact]
+  public void Parse_UploadFile_SetsPath()
+  {
+    CurlOptions options = CurlOptionParser.Parse("-T /path/to/file.txt https://api.example.com");
+    Assert.Equal("/path/to/file.txt", options.UploadFile);
+  }
+
+  [Fact]
+  public void Parse_UploadFileLongOption_SetsPath()
+  {
+    CurlOptions options = CurlOptionParser.Parse("--upload-file /path/to/file.txt https://api.example.com");
+    Assert.Equal("/path/to/file.txt", options.UploadFile);
+  }
+
+  [Fact]
+  public void Parse_Cert_SetsFile()
+  {
+    CurlOptions options = CurlOptionParser.Parse("--cert /path/to/cert.pem https://api.example.com");
+    Assert.Equal("/path/to/cert.pem", options.CertificateFile);
+  }
+
+  [Fact]
+  public void Parse_CertType_SetsType()
+  {
+    CurlOptions options = CurlOptionParser.Parse("--cert-type P12 https://api.example.com");
+    Assert.Equal("P12", options.CertificateType);
+  }
+
+  [Fact]
+  public void Parse_Key_SetsFile()
+  {
+    CurlOptions options = CurlOptionParser.Parse("--key /path/to/key.pem https://api.example.com");
+    Assert.Equal("/path/to/key.pem", options.KeyFile);
+  }
+
+  [Fact]
+  public void Parse_KeyType_SetsType()
+  {
+    CurlOptions options = CurlOptionParser.Parse("--key-type DER https://api.example.com");
+    Assert.Equal("DER", options.KeyType);
+  }
+
+  [Fact]
+  public void Parse_ProxyUser_SetsCredentials()
+  {
+    CurlOptions options = CurlOptionParser.Parse("--proxy-user admin:secret https://api.example.com");
+    Assert.Equal("admin:secret", options.ProxyUserCredentials);
+  }
+
+  [Fact]
+  public void Parse_ProxyUserShort_SetsCredentials()
+  {
+    CurlOptions options = CurlOptionParser.Parse("-U admin:secret https://api.example.com");
+    Assert.Equal("admin:secret", options.ProxyUserCredentials);
+  }
+
+  [Fact]
+  public void Parse_Http10_SetsVersion()
+  {
+    CurlOptions options = CurlOptionParser.Parse("--http1.0 https://api.example.com");
+    Assert.Equal("1.0", options.HttpVersion);
+  }
+
+  [Fact]
+  public void Parse_Http11_SetsVersion()
+  {
+    CurlOptions options = CurlOptionParser.Parse("--http1.1 https://api.example.com");
+    Assert.Equal("1.1", options.HttpVersion);
+  }
+
+  [Fact]
+  public void Parse_Http2_SetsVersion()
+  {
+    CurlOptions options = CurlOptionParser.Parse("--http2 https://api.example.com");
+    Assert.Equal("2", options.HttpVersion);
+  }
+
+  [Fact]
+  public void Parse_Http3_SetsVersion()
+  {
+    CurlOptions options = CurlOptionParser.Parse("--http3 https://api.example.com");
+    Assert.Equal("3", options.HttpVersion);
+  }
 }

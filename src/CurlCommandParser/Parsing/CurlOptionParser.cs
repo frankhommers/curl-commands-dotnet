@@ -27,12 +27,25 @@ public static class CurlOptionParser
   private const string LongCompressed = "--compressed";
   private const string LongDataUrlEncode = "--data-urlencode";
   private const string LongProxy = "--proxy";
+  private const string LongGet = "--get";
+  private const string LongHead = "--head";
+  private const string LongUploadFile = "--upload-file";
+  private const string LongCert = "--cert";
+  private const string LongCertType = "--cert-type";
+  private const string LongKey = "--key";
+  private const string LongKeyType = "--key-type";
+  private const string LongProxyUser = "--proxy-user";
+  private const string LongHttp09 = "--http0.9";
+  private const string LongHttp10 = "--http1.0";
+  private const string LongHttp11 = "--http1.1";
+  private const string LongHttp2 = "--http2";
+  private const string LongHttp3 = "--http3";
   private const string LongUrl = "--url";
   private const string ContentTypeSeparator = ";type=";
   private const int ContentTypeSeparatorLength = 6;
   private const string NoUrlFoundMessage = "No URL found in curl command.";
 
-  private static readonly HashSet<char> _shortBooleanFlags = ['L', 'k', 's', 'S', 'v', 'I', 'N'];
+  private static readonly HashSet<char> _shortBooleanFlags = ['L', 'k', 's', 'S', 'v', 'I', 'N', 'G'];
 
   /// <summary>
   /// Parses a curl command string into CurlOptions.
@@ -172,6 +185,58 @@ public static class CurlOptionParser
         options.ProxyUrl = GetNextArg(tokens, i, token);
         return i + 2;
 
+      case LongGet:
+        options.ForceGet = true;
+        return i + 1;
+
+      case LongHead:
+        options.Method ??= "HEAD";
+        return i + 1;
+
+      case LongUploadFile:
+        options.UploadFile = GetNextArg(tokens, i, token);
+        return i + 2;
+
+      case LongCert:
+        options.CertificateFile = GetNextArg(tokens, i, token);
+        return i + 2;
+
+      case LongCertType:
+        options.CertificateType = GetNextArg(tokens, i, token);
+        return i + 2;
+
+      case LongKey:
+        options.KeyFile = GetNextArg(tokens, i, token);
+        return i + 2;
+
+      case LongKeyType:
+        options.KeyType = GetNextArg(tokens, i, token);
+        return i + 2;
+
+      case LongProxyUser:
+        options.ProxyUserCredentials = GetNextArg(tokens, i, token);
+        return i + 2;
+
+      case LongHttp09:
+        options.HttpVersion = "0.9";
+        return i + 1;
+
+      case LongHttp10:
+        options.HttpVersion = "1.0";
+        return i + 1;
+
+      case LongHttp11:
+        options.HttpVersion = "1.1";
+        return i + 1;
+
+      case LongHttp2:
+        options.HttpVersion = "2";
+        return i + 1;
+
+      case LongHttp3:
+        options.HttpVersion = "3";
+        return i + 1;
+
       case LongUrl:
         options.Url = GetNextArg(tokens, i, token);
         return i + 2;
@@ -249,6 +314,18 @@ public static class CurlOptionParser
         options.Referer = GetNextArg(tokens, i, $"-{flag}");
         return i + 2;
 
+      case 'G':
+        options.ForceGet = true;
+        return i + 1;
+
+      case 'T':
+        options.UploadFile = GetNextArg(tokens, i, $"-{flag}");
+        return i + 2;
+
+      case 'U':
+        options.ProxyUserCredentials = GetNextArg(tokens, i, $"-{flag}");
+        return i + 2;
+
       case 'x':
         options.ProxyUrl = GetNextArg(tokens, i, $"-{flag}");
         return i + 2;
@@ -284,6 +361,7 @@ public static class CurlOptionParser
       case 'v': break;
       case 'I': options.Method ??= "HEAD"; break;
       case 'N': break;
+      case 'G': options.ForceGet = true; break;
     }
   }
 

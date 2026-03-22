@@ -58,4 +58,28 @@ public class CurlOptions
 
   /// <summary>Proxy URL (-x, --proxy).</summary>
   public string? ProxyUrl { get; set; }
+
+  /// <summary>Force GET method; -d data becomes query string (-G, --get).</summary>
+  public bool ForceGet { get; set; }
+
+  /// <summary>Upload file path (-T, --upload-file). Implies PUT if no method set.</summary>
+  public string? UploadFile { get; set; }
+
+  /// <summary>Client certificate file path (--cert).</summary>
+  public string? CertificateFile { get; set; }
+
+  /// <summary>Client certificate type (--cert-type). Default: PEM.</summary>
+  public string? CertificateType { get; set; }
+
+  /// <summary>Client certificate private key file path (--key).</summary>
+  public string? KeyFile { get; set; }
+
+  /// <summary>Client certificate key type (--key-type). Default: PEM.</summary>
+  public string? KeyType { get; set; }
+
+  /// <summary>Proxy credentials (-U, --proxy-user) in "user:password" format.</summary>
+  public string? ProxyUserCredentials { get; set; }
+
+  /// <summary>HTTP version (--http0.9, --http1.0, --http1.1, --http2, --http3).</summary>
+  public string? HttpVersion { get; set; }
 }

@@ -28,6 +28,12 @@ public static class HttpRequestBuilder
   /// </summary>
   public static HttpRequestMessage Build(CurlOptions options)
   {
+    // Handle -G: move data to query string
+    if (options.ForceGet)
+    {
+      ApplyForceGet(options);
+    }
+
     HttpMethod method = ResolveMethod(options);
     HttpRequestMessage request = new(method, options.Url);
 
@@ -35,8 +41,44 @@ public static class HttpRequestBuilder
     SetHeaders(request, options);
     SetAuth(request, options);
     SetMiscHeaders(request, options);
+    SetVersion(request, options);
 
     return request;
+  }
+
+  private static void ApplyForceGet(CurlOptions options)
+  {
+    string? queryData = options.DataBody;
+    if (queryData == null && options.DataUrlEncodeFields.Count > 0)
+    {
+      List<string> parts = [];
+      foreach (string field in options.DataUrlEncodeFields)
+      {
+        int eqIdx = field.IndexOf('=');
+        if (eqIdx >= 0)
+        {
+          string name = field.Substring(0, eqIdx);
+          string value = field.Substring(eqIdx + 1);
+          parts.Add($"{Uri.EscapeDataString(name)}={Uri.EscapeDataString(value)}");
+        }
+        else
+        {
+          parts.Add(Uri.EscapeDataString(field));
+        }
+      }
+      queryData = string.Join("&", parts);
+      options.DataUrlEncodeFields.Clear();
+    }
+
+    if (queryData != null)
+    {
+      string separator = options.Url.Contains("?") ? "&" : "?";
+      options.Url = options.Url + separator + queryData;
+      options.DataBody = null;
+    }
+
+    // -G forces GET unless explicit method was set
+    options.Method ??= "GET";
   }
 
   private static HttpMethod ResolveMethod(CurlOptions options)
@@ -44,6 +86,11 @@ public static class HttpRequestBuilder
     if (!string.IsNullOrEmpty(options.Method))
     {
       return new HttpMethod(options.Method);
+    }
+
+    if (options.UploadFile != null)
+    {
+      return HttpMethod.Put;
     }
 
     // Implicit POST when data or form fields are present
@@ -67,6 +114,17 @@ public static class HttpRequestBuilder
         contentType = value;
         break;
       }
+    }
+
+    if (options.UploadFile != null)
+    {
+      byte[] fileBytes = File.ReadAllBytes(options.UploadFile);
+      request.Content = new ByteArrayContent(fileBytes);
+      if (contentType != null)
+      {
+        request.Content.Headers.ContentType = MediaTypeHeaderValue.Parse(contentType);
+      }
+      return;
     }
 
     if (options.FormFields.Count > 0)
@@ -230,6 +288,22 @@ public static class HttpRequestBuilder
     {
       request.Headers.AcceptEncoding.Add(new StringWithQualityHeaderValue(GzipEncoding));
       request.Headers.AcceptEncoding.Add(new StringWithQualityHeaderValue(DeflateEncoding));
+    }
+  }
+
+  private static void SetVersion(HttpRequestMessage request, CurlOptions options)
+  {
+    if (options.HttpVersion != null)
+    {
+      request.Version = options.HttpVersion switch
+      {
+        "0.9" => new Version(0, 9),
+        "1.0" => new Version(1, 0),
+        "1.1" => new Version(1, 1),
+        "2" => new Version(2, 0),
+        "3" => new Version(3, 0),
+        _ => request.Version,
+      };
     }
   }
 }

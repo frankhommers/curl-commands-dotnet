@@ -60,7 +60,7 @@ public static class CurlHttpClientExtensions
   {
     if (!string.IsNullOrEmpty(options.ProxyUrl))
     {
-      return ProxyHttpClientFactory.GetClient(options.ProxyUrl!, options.Insecure);
+      return ProxyHttpClientFactory.GetClient(options.ProxyUrl!, options.Insecure, options.ProxyUserCredentials);
     }
 
     return options.Insecure ? InsecureHttpClientFactory.GetClient() : httpClient;
