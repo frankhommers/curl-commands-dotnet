@@ -297,6 +297,55 @@ public class CurlOptionParserTests
   }
 
   [Fact]
+  public void Parse_CertWithPassword_SplitsPathAndPassword()
+  {
+    CurlOptions options = CurlOptionParser.Parse("--cert /path/to/cert.pem:mypassword https://api.example.com");
+    Assert.Equal("/path/to/cert.pem", options.CertificateFile);
+    Assert.Equal("mypassword", options.CertificatePassword);
+  }
+
+  [Fact]
+  public void Parse_CertWithoutPassword_SetsOnlyPath()
+  {
+    CurlOptions options = CurlOptionParser.Parse("--cert /path/to/cert.pem https://api.example.com");
+    Assert.Equal("/path/to/cert.pem", options.CertificateFile);
+    Assert.Null(options.CertificatePassword);
+  }
+
+  [Fact]
+  public void Parse_CertWindowsPath_WithoutPassword_DoesNotSplitDriveLetter()
+  {
+    // Windows paths must be quoted in a shell; double quotes preserve backslashes for non-special chars
+    CurlOptions options = CurlOptionParser.Parse("--cert \"C:\\certs\\client.pfx\" https://api.example.com");
+    Assert.Equal("C:\\certs\\client.pfx", options.CertificateFile);
+    Assert.Null(options.CertificatePassword);
+  }
+
+  [Fact]
+  public void Parse_CertWindowsPath_WithPassword_SplitsCorrectly()
+  {
+    CurlOptions options = CurlOptionParser.Parse("--cert \"C:\\certs\\client.pfx:secret\" https://api.example.com");
+    Assert.Equal("C:\\certs\\client.pfx", options.CertificateFile);
+    Assert.Equal("secret", options.CertificatePassword);
+  }
+
+  [Fact]
+  public void Parse_CertPathWithSpaces_WithPassword_SplitsCorrectly()
+  {
+    CurlOptions options = CurlOptionParser.Parse("--cert '/path with spaces/cert.pem:pass' https://api.example.com");
+    Assert.Equal("/path with spaces/cert.pem", options.CertificateFile);
+    Assert.Equal("pass", options.CertificatePassword);
+  }
+
+  [Fact]
+  public void Parse_CertPathWithSpaces_WithoutPassword_SetsOnlyPath()
+  {
+    CurlOptions options = CurlOptionParser.Parse("--cert '/path with spaces/cert.pem' https://api.example.com");
+    Assert.Equal("/path with spaces/cert.pem", options.CertificateFile);
+    Assert.Null(options.CertificatePassword);
+  }
+
+  [Fact]
   public void Parse_CertType_SetsType()
   {
     CurlOptions options = CurlOptionParser.Parse("--cert-type P12 https://api.example.com");
@@ -357,5 +406,21 @@ public class CurlOptionParserTests
   {
     CurlOptions options = CurlOptionParser.Parse("--http3 https://api.example.com");
     Assert.Equal("3", options.HttpVersion);
+  }
+
+  [Fact]
+  public void Parse_JsonFlag_SetsDataBodyAndJsonFlag()
+  {
+    CurlOptions options = CurlOptionParser.Parse("curl --json '{\"key\":\"value\"}' https://api.example.com");
+    Assert.Equal("{\"key\":\"value\"}", options.DataBody);
+    Assert.True(options.IsJson);
+  }
+
+  [Fact]
+  public void Parse_JsonFlag_DoesNotOverrideExplicitContentType()
+  {
+    CurlOptions options = CurlOptionParser.Parse("curl -H 'Content-Type: text/plain' --json '{\"key\":\"value\"}' https://api.example.com");
+    Assert.True(options.IsJson);
+    Assert.Contains(options.Headers, h => h.Name == "Content-Type" && h.Value == "text/plain");
   }
 }

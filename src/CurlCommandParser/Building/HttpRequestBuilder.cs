@@ -43,6 +43,11 @@ public static class HttpRequestBuilder
     SetMiscHeaders(request, options);
     SetVersion(request, options);
 
+    if (options.IsJson)
+    {
+      ApplyJsonDefaults(request, options);
+    }
+
     return request;
   }
 
@@ -288,6 +293,29 @@ public static class HttpRequestBuilder
     {
       request.Headers.AcceptEncoding.Add(new StringWithQualityHeaderValue(GzipEncoding));
       request.Headers.AcceptEncoding.Add(new StringWithQualityHeaderValue(DeflateEncoding));
+    }
+  }
+
+  private static void ApplyJsonDefaults(HttpRequestMessage request, CurlOptions options)
+  {
+    if (request.Headers.Accept.Count == 0)
+    {
+      request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+    }
+
+    bool hasExplicitContentType = false;
+    foreach ((string name, string _) in options.Headers)
+    {
+      if (name.Equals(ContentTypeHeader, StringComparison.OrdinalIgnoreCase))
+      {
+        hasExplicitContentType = true;
+        break;
+      }
+    }
+
+    if (!hasExplicitContentType && request.Content != null)
+    {
+      request.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json") { CharSet = "utf-8" };
     }
   }
 

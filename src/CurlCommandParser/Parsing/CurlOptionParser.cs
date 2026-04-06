@@ -25,6 +25,7 @@ public static class CurlOptionParser
   private const string LongUserAgent = "--user-agent";
   private const string LongReferer = "--referer";
   private const string LongCompressed = "--compressed";
+  private const string LongJson = "--json";
   private const string LongDataUrlEncode = "--data-urlencode";
   private const string LongProxy = "--proxy";
   private const string LongGet = "--get";
@@ -177,6 +178,11 @@ public static class CurlOptionParser
         options.Compressed = true;
         return i + 1;
 
+      case LongJson:
+        options.DataBody = GetNextArg(tokens, i, token);
+        options.IsJson = true;
+        return i + 2;
+
       case LongDataUrlEncode:
         options.DataUrlEncodeFields.Add(GetNextArg(tokens, i, token));
         return i + 2;
@@ -198,7 +204,7 @@ public static class CurlOptionParser
         return i + 2;
 
       case LongCert:
-        options.CertificateFile = GetNextArg(tokens, i, token);
+        ParseCertArgument(GetNextArg(tokens, i, token), options);
         return i + 2;
 
       case LongCertType:
@@ -362,6 +368,30 @@ public static class CurlOptionParser
       case 'I': options.Method ??= "HEAD"; break;
       case 'N': break;
       case 'G': options.ForceGet = true; break;
+    }
+  }
+
+  private static void ParseCertArgument(string certArg, CurlOptions options)
+  {
+    // Curl format: --cert <certificate[:password]>
+    // On Windows, paths can start with a drive letter like C:\, so skip
+    // past a drive letter prefix (single letter + colon) before searching
+    // for the password separator.
+    int searchFrom = 0;
+    if (certArg.Length >= 2 && char.IsLetter(certArg[0]) && certArg[1] == ':')
+    {
+      searchFrom = 2;
+    }
+
+    int colonIndex = certArg.IndexOf(':', searchFrom);
+    if (colonIndex > 0 && colonIndex < certArg.Length - 1)
+    {
+      options.CertificateFile = certArg.Substring(0, colonIndex);
+      options.CertificatePassword = certArg.Substring(colonIndex + 1);
+    }
+    else
+    {
+      options.CertificateFile = certArg;
     }
   }
 

@@ -19,6 +19,9 @@
     <PackageProjectUrl>https://github.com/frankhommers/curl-dotnet</PackageProjectUrl>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
+  <ItemGroup>
+    <InternalsVisibleTo Include="CurlCommandParser.Tests"/>
+  </ItemGroup>
   <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
     <PackageReference Include="System.Net.Http" Version="4.3.4"/>
   </ItemGroup>

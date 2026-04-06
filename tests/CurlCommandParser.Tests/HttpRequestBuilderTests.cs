@@ -388,4 +388,45 @@ public class HttpRequestBuilderTests
 
     Assert.Equal(HttpMethod.Head, request.Method);
   }
+
+  [Fact]
+  public void Build_JsonFlag_SetsContentTypeAndAcceptHeaders()
+  {
+    CurlOptions options = new()
+    {
+      Url = "https://example.com",
+      DataBody = "{\"key\":\"value\"}",
+      IsJson = true
+    };
+    HttpRequestMessage request = HttpRequestBuilder.Build(options);
+    Assert.Equal("application/json", request.Content?.Headers.ContentType?.MediaType);
+    Assert.Contains(request.Headers.Accept, a => a.MediaType == "application/json");
+  }
+
+  [Fact]
+  public void Build_JsonFlag_ImpliesPost()
+  {
+    CurlOptions options = new()
+    {
+      Url = "https://example.com",
+      DataBody = "{}",
+      IsJson = true
+    };
+    HttpRequestMessage request = HttpRequestBuilder.Build(options);
+    Assert.Equal(HttpMethod.Post, request.Method);
+  }
+
+  [Fact]
+  public void Build_JsonFlag_DoesNotOverrideExplicitContentType()
+  {
+    CurlOptions options = new()
+    {
+      Url = "https://example.com",
+      DataBody = "{}",
+      IsJson = true,
+      Headers = [("Content-Type", "text/plain")]
+    };
+    HttpRequestMessage request = HttpRequestBuilder.Build(options);
+    Assert.Equal("text/plain", request.Content?.Headers.ContentType?.MediaType);
+  }
 }

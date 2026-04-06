@@ -88,4 +88,34 @@ public class ShellTokenizerTests
     List<string> tokens = ShellTokenizer.Tokenize("one \\\ntwo");
     Assert.Equal(new[] {"one", "two"}, tokens);
   }
+
+  [Fact]
+  public void Tokenize_WindowsPathInDoubleQuotes_PreservesBackslashes()
+  {
+    List<string> tokens = ShellTokenizer.Tokenize("--cert \"C:\\certs\\client.pfx\"");
+    Assert.Equal(new[] {"--cert", "C:\\certs\\client.pfx"}, tokens);
+  }
+
+  [Fact]
+  public void Tokenize_WindowsPathInSingleQuotes_PreservesBackslashes()
+  {
+    List<string> tokens = ShellTokenizer.Tokenize("--cert 'C:\\certs\\client.pfx'");
+    Assert.Equal(new[] {"--cert", "C:\\certs\\client.pfx"}, tokens);
+  }
+
+  [Fact]
+  public void Tokenize_WindowsPathUnquoted_BackslashEscapesNextChar()
+  {
+    // Unquoted backslash in POSIX shell escapes the next character
+    // So C:\certs\client.pfx becomes C:certsclient.pfx
+    List<string> tokens = ShellTokenizer.Tokenize("--cert C:\\certs\\client.pfx");
+    Assert.Equal(new[] {"--cert", "C:certsclient.pfx"}, tokens);
+  }
+
+  [Fact]
+  public void Tokenize_PathWithSpacesInQuotes_PreservesSpaces()
+  {
+    List<string> tokens = ShellTokenizer.Tokenize("--cert '/path with spaces/cert.pem'");
+    Assert.Equal(new[] {"--cert", "/path with spaces/cert.pem"}, tokens);
+  }
 }

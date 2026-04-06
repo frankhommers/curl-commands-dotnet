@@ -58,6 +58,15 @@ public static class CurlHttpClientExtensions
 
   private static HttpClient ResolveClient(HttpClient httpClient, CurlOptions options)
   {
+    if (!string.IsNullOrEmpty(options.CertificateFile))
+    {
+      return CertificateHttpClientFactory.GetClient(
+        options.CertificateFile!,
+        keyFile: options.KeyFile,
+        password: options.CertificatePassword,
+        insecure: options.Insecure);
+    }
+
     if (!string.IsNullOrEmpty(options.ProxyUrl))
     {
       return ProxyHttpClientFactory.GetClient(options.ProxyUrl!, options.Insecure, options.ProxyUserCredentials);

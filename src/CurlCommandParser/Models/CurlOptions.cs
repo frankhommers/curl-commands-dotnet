@@ -53,6 +53,9 @@ public class CurlOptions
   /// <summary>Whether to request compressed responses (--compressed).</summary>
   public bool Compressed { get; set; }
 
+  /// <summary>Whether --json flag was used. Implies POST, Content-Type: application/json, Accept: application/json.</summary>
+  public bool IsJson { get; set; }
+
   /// <summary>URL-encoded data fields (--data-urlencode). Each entry is "name=value" or just "value".</summary>
   public List<string> DataUrlEncodeFields { get; set; } = [];
 
@@ -67,6 +70,9 @@ public class CurlOptions
 
   /// <summary>Client certificate file path (--cert).</summary>
   public string? CertificateFile { get; set; }
+
+  /// <summary>Client certificate password (extracted from --cert path:password).</summary>
+  public string? CertificatePassword { get; set; }
 
   /// <summary>Client certificate type (--cert-type). Default: PEM.</summary>
   public string? CertificateType { get; set; }
