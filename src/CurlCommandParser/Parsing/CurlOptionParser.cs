@@ -41,6 +41,7 @@ public static class CurlOptionParser
   private const string LongHttp11 = "--http1.1";
   private const string LongHttp2 = "--http2";
   private const string LongHttp3 = "--http3";
+  private const string LongOutput = "--output";
   private const string LongUrl = "--url";
   private const string ContentTypeSeparator = ";type=";
   private const int ContentTypeSeparatorLength = 6;
@@ -247,6 +248,10 @@ public static class CurlOptionParser
         options.Url = GetNextArg(tokens, i, token);
         return i + 2;
 
+      case LongOutput:
+        options.OutputFile = GetNextArg(tokens, i, token);
+        return i + 2;
+
       default:
         throw new CurlParseException($"Unsupported curl option: '{token}'.", i);
     }
@@ -337,12 +342,10 @@ public static class CurlOptionParser
         return i + 2;
 
       case 'o':
-      case 'O':
-        if (flag == 'o')
-        {
-          return i + 2;
-        }
+        options.OutputFile = GetNextArg(tokens, i, $"-{flag}");
+        return i + 2;
 
+      case 'O':
         return i + 1;
 
       default:

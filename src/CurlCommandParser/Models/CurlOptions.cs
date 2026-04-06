@@ -88,4 +88,7 @@ public class CurlOptions
 
   /// <summary>HTTP version (--http0.9, --http1.0, --http1.1, --http2, --http3).</summary>
   public string? HttpVersion { get; set; }
+
+  /// <summary>Output file path (-o, --output). If set, response body is saved to this file.</summary>
+  public string? OutputFile { get; set; }
 }

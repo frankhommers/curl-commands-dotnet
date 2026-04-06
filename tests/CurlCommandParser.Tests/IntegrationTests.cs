@@ -250,6 +250,27 @@ public class IntegrationTests
     Assert.True(response.IsSuccessStatusCode);
   }
 
+  [Fact]
+  public async Task ExecuteCurlAsync_OutputFlag_SavesResponseToFile()
+  {
+    string tempFile = Path.Combine(Path.GetTempPath(), $"curl-test-{Guid.NewGuid()}.txt");
+    try
+    {
+      FakeHandler handler = new(_ => new HttpResponseMessage(HttpStatusCode.OK)
+      {
+        Content = new StringContent("response body content")
+      });
+      using HttpClient client = new(handler);
+      HttpResponseMessage response = await client.ExecuteCurlAsync($"curl -o {tempFile} https://example.com");
+      Assert.True(File.Exists(tempFile));
+      Assert.Equal("response body content", File.ReadAllText(tempFile));
+    }
+    finally
+    {
+      if (File.Exists(tempFile)) File.Delete(tempFile);
+    }
+  }
+
   /// <summary>
   /// A fake HttpMessageHandler that delegates to a provided function.
   /// </summary>

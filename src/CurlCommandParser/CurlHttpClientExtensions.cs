@@ -36,7 +36,14 @@ public static class CurlHttpClientExtensions
     using CancellationTokenSource? timeoutCts = CreateTimeoutCts(options, cancellationToken);
     CancellationToken token = timeoutCts?.Token ?? cancellationToken;
 
-    return await client.SendAsync(request, token).ConfigureAwait(false);
+    HttpResponseMessage response = await client.SendAsync(request, token).ConfigureAwait(false);
+
+    if (!string.IsNullOrEmpty(options.OutputFile))
+    {
+      await SaveResponseToFileAsync(response, options.OutputFile!, token).ConfigureAwait(false);
+    }
+
+    return response;
   }
 
   /// <summary>
@@ -73,6 +80,24 @@ public static class CurlHttpClientExtensions
     }
 
     return options.Insecure ? InsecureHttpClientFactory.GetClient() : httpClient;
+  }
+
+  private static async Task SaveResponseToFileAsync(
+    HttpResponseMessage response,
+    string filePath,
+    CancellationToken cancellationToken)
+  {
+    byte[] content = await response.Content.ReadAsByteArrayAsync().ConfigureAwait(false);
+    string? directory = Path.GetDirectoryName(filePath);
+    if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory))
+    {
+      Directory.CreateDirectory(directory);
+    }
+#if NET8_0_OR_GREATER
+    await File.WriteAllBytesAsync(filePath, content, cancellationToken).ConfigureAwait(false);
+#else
+    File.WriteAllBytes(filePath, content);
+#endif
   }
 
   private static CancellationTokenSource? CreateTimeoutCts(CurlOptions options, CancellationToken cancellationToken)

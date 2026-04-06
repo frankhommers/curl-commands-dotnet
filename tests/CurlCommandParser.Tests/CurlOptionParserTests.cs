@@ -423,4 +423,18 @@ public class CurlOptionParserTests
     Assert.True(options.IsJson);
     Assert.Contains(options.Headers, h => h.Name == "Content-Type" && h.Value == "text/plain");
   }
+
+  [Fact]
+  public void Parse_OutputFlag_SetsOutputFile()
+  {
+    CurlOptions options = CurlOptionParser.Parse("curl -o output.json https://api.example.com");
+    Assert.Equal("output.json", options.OutputFile);
+  }
+
+  [Fact]
+  public void Parse_LongOutputFlag_SetsOutputFile()
+  {
+    CurlOptions options = CurlOptionParser.Parse("curl --output result.txt https://api.example.com");
+    Assert.Equal("result.txt", options.OutputFile);
+  }
 }
