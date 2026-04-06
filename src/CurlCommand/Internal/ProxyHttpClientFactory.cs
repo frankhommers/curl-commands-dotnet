@@ -1,7 +1,7 @@
 using System.Collections.Concurrent;
 using System.Net;
 
-namespace CurlCommandParser.Internal;
+namespace CurlCommand.Internal;
 
 /// <summary>
 /// Provides cached HttpClient instances configured with a proxy.

@@ -1,4 +1,4 @@
-namespace CurlCommandParser.Internal;
+namespace CurlCommand.Internal;
 
 /// <summary>
 /// Provides a cached HttpClient that skips SSL certificate validation.

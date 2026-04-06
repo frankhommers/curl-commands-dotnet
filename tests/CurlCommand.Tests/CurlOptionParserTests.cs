@@ -1,8 +1,8 @@
-using CurlCommandParser.Exceptions;
-using CurlCommandParser.Models;
-using CurlCommandParser.Parsing;
+using CurlCommand.Exceptions;
+using CurlCommand.Models;
+using CurlCommand.Parsing;
 
-namespace CurlCommandParser.Tests;
+namespace CurlCommand.Tests;
 
 public class CurlOptionParserTests
 {

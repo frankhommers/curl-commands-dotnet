@@ -1,7 +1,7 @@
 using System.Collections.Concurrent;
 using System.Security.Cryptography.X509Certificates;
 
-namespace CurlCommandParser.Internal;
+namespace CurlCommand.Internal;
 
 /// <summary>
 /// Provides cached HttpClient instances configured with client certificates.
