@@ -29,7 +29,19 @@ public static class CurlHttpClientExtensions
     string curlCommand,
     CancellationToken cancellationToken = default)
   {
-    CurlOptions options = CurlOptionParser.Parse(curlCommand);
+    Command command = Command.Parse(curlCommand);
+    return await httpClient.ExecuteCurlAsync(command, cancellationToken).ConfigureAwait(false);
+  }
+
+  /// <summary>
+  /// Executes a pre-parsed Command, returning the HttpResponseMessage.
+  /// </summary>
+  public static async Task<HttpResponseMessage> ExecuteCurlAsync(
+    this HttpClient httpClient,
+    Command command,
+    CancellationToken cancellationToken = default)
+  {
+    CurlOptions options = command.Options;
     HttpRequestMessage request = HttpRequestBuilder.Build(options);
     HttpClient client = ResolveClient(httpClient, options);
 
