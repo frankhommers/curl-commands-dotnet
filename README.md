@@ -1,17 +1,17 @@
-# CurlCommandParser
+# CurlCommand
 
 Parse and execute curl command strings at runtime via `HttpClient`. Zero external dependencies.
 
 ## Install
 
 ```
-dotnet add package CurlCommandParser
+dotnet add package CurlCommand
 ```
 
 ## Usage
 
 ```csharp
-using CurlCommandParser;
+using CurlCommand;
 
 using var httpClient = new HttpClient();
 
@@ -23,6 +23,18 @@ var response = await httpClient.ExecuteCurlAsync(
     "curl -X POST https://api.example.com/users " +
     "-H 'Content-Type: application/json' " +
     "-d '{\"name\":\"John\",\"email\":\"john@example.com\"}'");
+
+// --json flag (auto Content-Type + Accept)
+var response = await httpClient.ExecuteCurlAsync(
+    "curl --json '{\"name\":\"John\"}' https://api.example.com/users");
+
+// Save response to file
+var response = await httpClient.ExecuteCurlAsync(
+    "curl -o result.json https://api.example.com/users");
+
+// Pre-parse and reuse
+Command cmd = Command.Parse("curl -X POST https://api.example.com/users -d '{}'");
+var response = await httpClient.ExecuteCurlAsync(cmd);
 
 // Fire-and-forget (executes request, disposes response)
 await httpClient.ExecuteCurlAndForgetAsync(
@@ -39,7 +51,9 @@ The `curl` prefix is optional.
 | `-H`, `--header` | Request header (`Name: Value`) |
 | `-d`, `--data`, `--data-raw` | Request body (implies POST) |
 | `--data-binary` | Binary request body |
+| `--json` | JSON request body (auto Content-Type + Accept) |
 | `-F`, `--form` | Multipart form field (`name=value` or `file=@path`) |
+| `-o`, `--output` | Save response body to file |
 | `-u`, `--user` | Basic auth credentials (`user:password`) |
 | `--oauth2-bearer` | Bearer token authentication |
 | `-b`, `--cookie` | Cookie header |
@@ -66,6 +80,8 @@ The `curl` prefix is optional.
 - **Implicit method detection** -- `-d` implies POST, `-F` implies POST
 - **Combined short flags** -- `-sLk` expands to silent + location + insecure
 - **Content-Type routing** -- Content-Type headers are correctly placed on `HttpContent`, not on the request
+- **JSON flag** -- `--json` auto-sets Content-Type and Accept to `application/json`
+- **Output to file** -- `-o`/`--output` saves response body to disk
 - **Basic and Bearer auth** -- `-u user:pass` and `--oauth2-bearer token`
 - **Multipart form data** -- `-F 'file=@/path/to/file;type=application/pdf'`
 - **Timeout support** -- `--max-time` and `--connect-timeout` via `CancellationToken`
@@ -77,13 +93,14 @@ The `curl` prefix is optional.
 - **Client certificates** -- `--cert`/`--key` for mutual TLS
 - **Proxy auth** -- `-U`/`--proxy-user` for proxy credentials
 - **HTTP version** -- `--http1.0` through `--http3`
+- **Pre-parsed commands** -- `Command.Parse()` for reuse and inspection
 
 ## Error Handling
 
 Parse errors throw `CurlParseException` with a descriptive message. HTTP errors follow standard `HttpClient` behavior -- use `response.EnsureSuccessStatusCode()` or check `response.IsSuccessStatusCode`.
 
 ```csharp
-using CurlCommandParser.Exceptions;
+using CurlCommand.Exceptions;
 
 try
 {

@@ -10,7 +10,7 @@
     <PackageId>CurlCommand</PackageId>
     <Version>1.0.0</Version>
     <Authors>Frank Hommers</Authors>
-    <Description>Parse and execute curl command strings at runtime via HttpClient. Supports headers, auth, form data, timeouts, and more with zero external dependencies.</Description>
+    <Description>Parse and execute curl command strings at runtime via HttpClient. Supports headers, auth, form data, JSON, output files, client certificates, timeouts, and more with zero external dependencies.</Description>
     <PackageTags>curl;httpclient;http;rest;api</PackageTags>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageReadmeFile>README.md</PackageReadmeFile>
