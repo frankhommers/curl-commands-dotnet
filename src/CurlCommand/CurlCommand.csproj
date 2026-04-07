@@ -15,8 +15,8 @@
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <RepositoryType>git</RepositoryType>
-    <RepositoryUrl>https://github.com/frankhommers/curl-dotnet</RepositoryUrl>
-    <PackageProjectUrl>https://github.com/frankhommers/curl-dotnet</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/frankhommers/curl-commands-dotnet</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/frankhommers/curl-commands-dotnet</PackageProjectUrl>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
   <ItemGroup>
