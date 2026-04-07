@@ -1,0 +1,29 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFrameworks>netstandard2.0;net10.0</TargetFrameworks>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>CurlCommands</RootNamespace>
+
+    <!-- NuGet Package -->
+    <PackageId>CurlCommands</PackageId>
+    <Version>1.0.0</Version>
+    <Authors>Frank Hommers</Authors>
+    <Description>Parse and execute curl command strings at runtime via HttpClient. Supports headers, auth, form data, JSON, output files, client certificates, timeouts, and more with zero external dependencies.</Description>
+    <PackageTags>curl;httpclient;http;rest;api</PackageTags>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/frankhommers/curl-commands-dotnet</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/frankhommers/curl-commands-dotnet</PackageProjectUrl>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <InternalsVisibleTo Include="CurlCommands.Tests"/>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="../../README.md" Pack="true" PackagePath="/"/>
+  </ItemGroup>
+</Project>
