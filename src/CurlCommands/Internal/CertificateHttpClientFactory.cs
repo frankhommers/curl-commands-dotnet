@@ -54,25 +54,29 @@ internal static class CertificateHttpClientFactory
 
   private static X509Certificate2 LoadCertificate(string certFile, string? keyFile, string? password)
   {
-#if NET8_0_OR_GREATER
+#if NET10_0_OR_GREATER
     if (keyFile != null)
     {
       X509Certificate2 cert = X509Certificate2.CreateFromPemFile(certFile, keyFile);
-      // PEM certs need to be exported/reimported to work with SslStream on some platforms
-      return new X509Certificate2(cert.Export(X509ContentType.Pfx));
+      return X509CertificateLoader.LoadPkcs12(cert.Export(X509ContentType.Pfx), null);
     }
 
     if (certFile.EndsWith(".pem", StringComparison.OrdinalIgnoreCase)
         || certFile.EndsWith(".crt", StringComparison.OrdinalIgnoreCase))
     {
       X509Certificate2 cert = X509Certificate2.CreateFromPemFile(certFile);
-      return new X509Certificate2(cert.Export(X509ContentType.Pfx));
+      return X509CertificateLoader.LoadPkcs12(cert.Export(X509ContentType.Pfx), null);
     }
-#endif
 
-    // PFX/PKCS12 or fallback
+    byte[] pfxBytes = File.ReadAllBytes(certFile);
+    return password != null
+      ? X509CertificateLoader.LoadPkcs12(pfxBytes, password)
+      : X509CertificateLoader.LoadPkcs12(pfxBytes, null);
+#else
+    // netstandard2.0 fallback
     return password != null
       ? new X509Certificate2(certFile, password)
       : new X509Certificate2(certFile);
+#endif
   }
 }

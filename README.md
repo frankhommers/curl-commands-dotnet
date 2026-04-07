@@ -1,11 +1,11 @@
-# CurlCommand
+# CurlCommands
 
 Parse and execute curl command strings at runtime via `HttpClient`. Zero external dependencies.
 
 ## Install
 
 ```
-dotnet add package CurlCommand
+dotnet add package CurlCommands
 ```
 
 ## Usage
