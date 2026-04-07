@@ -1,8 +1,8 @@
 using System.Net.Http.Headers;
 using System.Text;
-using CurlCommand.Models;
+using CurlCommands.Models;
 
-namespace CurlCommand.Building;
+namespace CurlCommands.Building;
 
 /// <summary>
 /// Converts a CurlOptions model into an HttpRequestMessage.

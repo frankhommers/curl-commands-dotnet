@@ -1,7 +1,7 @@
-using CurlCommand.Exceptions;
-using CurlCommand.Models;
+using CurlCommands.Exceptions;
+using CurlCommands.Models;
 
-namespace CurlCommand.Parsing;
+namespace CurlCommands.Parsing;
 
 /// <summary>
 /// Parses a curl command string (or pre-tokenized arguments) into a CurlOptions model.

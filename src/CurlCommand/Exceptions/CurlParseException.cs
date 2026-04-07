@@ -1,4 +1,4 @@
-namespace CurlCommand.Exceptions;
+namespace CurlCommands.Exceptions;
 
 /// <summary>
 /// Thrown when a curl command string cannot be parsed.

@@ -11,7 +11,7 @@ dotnet add package CurlCommand
 ## Usage
 
 ```csharp
-using CurlCommand;
+using CurlCommands;
 
 using var httpClient = new HttpClient();
 
@@ -33,7 +33,7 @@ var response = await httpClient.ExecuteCurlAsync(
     "curl -o result.json https://api.example.com/users");
 
 // Pre-parse and reuse
-Command cmd = Command.Parse("curl -X POST https://api.example.com/users -d '{}'");
+CurlCommand cmd = CurlCommand.Parse("curl -X POST https://api.example.com/users -d '{}'");
 var response = await httpClient.ExecuteCurlAsync(cmd);
 
 // Fire-and-forget (executes request, disposes response)
@@ -93,14 +93,14 @@ The `curl` prefix is optional.
 - **Client certificates** -- `--cert`/`--key` for mutual TLS
 - **Proxy auth** -- `-U`/`--proxy-user` for proxy credentials
 - **HTTP version** -- `--http1.0` through `--http3`
-- **Pre-parsed commands** -- `Command.Parse()` for reuse and inspection
+- **Pre-parsed commands** -- `CurlCommand.Parse()` for reuse and inspection
 
 ## Error Handling
 
 Parse errors throw `CurlParseException` with a descriptive message. HTTP errors follow standard `HttpClient` behavior -- use `response.EnsureSuccessStatusCode()` or check `response.IsSuccessStatusCode`.
 
 ```csharp
-using CurlCommand.Exceptions;
+using CurlCommands.Exceptions;
 
 try
 {

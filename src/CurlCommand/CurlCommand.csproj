@@ -4,7 +4,7 @@
     <LangVersion>latest</LangVersion>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <RootNamespace>CurlCommand</RootNamespace>
+    <RootNamespace>CurlCommands</RootNamespace>
 
     <!-- NuGet Package -->
     <PackageId>CurlCommand</PackageId>

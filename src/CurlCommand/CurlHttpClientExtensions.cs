@@ -1,9 +1,9 @@
-using CurlCommand.Building;
-using CurlCommand.Internal;
-using CurlCommand.Models;
-using CurlCommand.Parsing;
+using CurlCommands.Building;
+using CurlCommands.Internal;
+using CurlCommands.Models;
+using CurlCommands.Parsing;
 
-namespace CurlCommand;
+namespace CurlCommands;
 
 /// <summary>
 /// Extension methods on HttpClient for executing curl commands.
@@ -29,16 +29,16 @@ public static class CurlHttpClientExtensions
     string curlCommand,
     CancellationToken cancellationToken = default)
   {
-    Command command = Command.Parse(curlCommand);
+    CurlCommand command = CurlCommand.Parse(curlCommand);
     return await httpClient.ExecuteCurlAsync(command, cancellationToken).ConfigureAwait(false);
   }
 
   /// <summary>
-  /// Executes a pre-parsed Command, returning the HttpResponseMessage.
+  /// Executes a pre-parsed CurlCommand, returning the HttpResponseMessage.
   /// </summary>
   public static async Task<HttpResponseMessage> ExecuteCurlAsync(
     this HttpClient httpClient,
-    Command command,
+    CurlCommand command,
     CancellationToken cancellationToken = default)
   {
     CurlOptions options = command.Options;

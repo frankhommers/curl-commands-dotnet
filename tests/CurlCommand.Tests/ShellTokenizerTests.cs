@@ -1,6 +1,6 @@
-using CurlCommand.Parsing;
+using CurlCommands.Parsing;
 
-namespace CurlCommand.Tests;
+namespace CurlCommands.Tests;
 
 public class ShellTokenizerTests
 {

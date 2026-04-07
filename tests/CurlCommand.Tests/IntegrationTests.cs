@@ -1,10 +1,10 @@
 using System.Net;
 using System.Text;
 using System.Text.Json;
-using CurlCommand;
-using CurlCommand.Exceptions;
+using CurlCommands;
+using CurlCommands.Exceptions;
 
-namespace CurlCommand.Tests;
+namespace CurlCommands.Tests;
 
 public class IntegrationTests
 {

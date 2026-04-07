@@ -1,13 +1,14 @@
 using System.Net;
+using CurlCommands;
 
-namespace CurlCommand.Tests;
+namespace CurlCommands.Tests;
 
-public class CommandTests
+public class CurlCommandTests
 {
   [Fact]
-  public void Parse_ReturnsCommandWithOptions()
+  public void Parse_ReturnsCurlCommandWithOptions()
   {
-    Command cmd = Command.Parse("curl -X POST https://api.example.com -d '{}'");
+    CurlCommand cmd = CurlCommand.Parse("curl -X POST https://api.example.com -d '{}'");
     Assert.Equal("https://api.example.com", cmd.Options.Url);
     Assert.Equal("POST", cmd.Options.Method);
     Assert.Equal("{}", cmd.Options.DataBody);
@@ -16,22 +17,22 @@ public class CommandTests
   [Fact]
   public void Parse_WithoutCurlPrefix_Works()
   {
-    Command cmd = Command.Parse("-X GET https://example.com");
+    CurlCommand cmd = CurlCommand.Parse("-X GET https://example.com");
     Assert.Equal("https://example.com", cmd.Options.Url);
   }
 
   [Fact]
   public void Options_IsReadOnly()
   {
-    Command cmd = Command.Parse("curl https://example.com");
+    CurlCommand cmd = CurlCommand.Parse("curl https://example.com");
     Assert.NotNull(cmd.Options);
     Assert.Equal("https://example.com", cmd.Options.Url);
   }
 
   [Fact]
-  public async Task ExecuteCurlAsync_WithCommand_Works()
+  public async Task ExecuteCurlAsync_WithCurlCommand_Works()
   {
-    Command cmd = Command.Parse("curl -X POST https://example.com -d 'test'");
+    CurlCommand cmd = CurlCommand.Parse("curl -X POST https://example.com -d 'test'");
     FakeHandler handler = new(new HttpResponseMessage(HttpStatusCode.OK));
     using HttpClient client = new(handler);
     HttpResponseMessage response = await client.ExecuteCurlAsync(cmd);

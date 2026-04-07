@@ -1,6 +1,6 @@
 using System.Text;
 
-namespace CurlCommand.Parsing;
+namespace CurlCommands.Parsing;
 
 /// <summary>
 /// Splits a string into tokens following POSIX shell quoting rules.

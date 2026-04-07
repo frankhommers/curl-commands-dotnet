@@ -1,8 +1,8 @@
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
-using CurlCommand.Internal;
+using CurlCommands.Internal;
 
-namespace CurlCommand.Tests;
+namespace CurlCommands.Tests;
 
 public class CertificateHttpClientFactoryTests
 {

@@ -1,4 +1,4 @@
-namespace CurlCommand.Models;
+namespace CurlCommands.Models;
 
 /// <summary>
 /// Intermediate representation of a parsed curl command.

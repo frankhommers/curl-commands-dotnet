@@ -1,4 +1,4 @@
-namespace CurlCommand.Models;
+namespace CurlCommands.Models;
 
 /// <summary>
 /// Represents a single -F / --form field.
