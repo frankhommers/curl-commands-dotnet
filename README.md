@@ -115,7 +115,7 @@ catch (CurlParseException ex)
 ## Target Frameworks
 
 - `netstandard2.0` -- .NET Framework 4.6.1+, .NET Core 2.0+
-- `net8.0` -- modern .NET
+- `net10.0` -- modern .NET
 
 ## License
 
